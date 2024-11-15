@@ -8,7 +8,7 @@ const formatDiameter = (diameterKm) => {
   return diameterMeters.toFixed(2);
 };
 
-const Card = ({ data }) => {
+const Card = ({ data, getDetail }) => {
   return data.map((e, idx) => {
     return (
       <div key={e.id} className="col-sm-12 col-xl-6 text-start">
@@ -46,7 +46,7 @@ const Card = ({ data }) => {
               {formatDiameter(e.diameter.max)} m
             </dd>
           </dl>
-          <button className="btn btn-warning mt-3">More Info</button>
+          <button className="btn btn-warning mt-3" onClick={() => getDetail(e.id)}>More Info</button>
         </div>
       </div>
     );
