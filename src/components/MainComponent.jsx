@@ -120,6 +120,7 @@ const MainComponent = () => {
       });
 
       if (!response.ok) {
+        setShow(false);
         const errorData = await response.json();
         throw new Error(errorData.message);
       }
