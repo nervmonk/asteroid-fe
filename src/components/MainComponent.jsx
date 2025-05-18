@@ -52,7 +52,7 @@ const MainComponent = () => {
 
   const handlePostRequest = async () => {
     setLoading(true);
-    const url = "http://222.165.225.218:1313/neo/feed";
+    const url = "http://localhost:1313/neo/feed";
     const requestData = {
       startDate: startDate,
       endDate: endDate,
@@ -86,7 +86,7 @@ const MainComponent = () => {
 
   const handleTop2023 = async () => {
     setLoading(true);
-    const url = "http://222.165.225.218:1313/top-10/2023";
+    const url = "http://localhost:1313/top-10/2023";
 
     try {
       const response = await fetch(url, {
@@ -110,9 +110,9 @@ const MainComponent = () => {
   };
 
   const handleAsteroidDetail = async (id) => {
-    setModalLoading(true)
+    setModalLoading(true);
     setShow(true);
-    const url = "http://222.165.225.218:1313/neo/lookup/" + id;
+    const url = "http://localhost:1313/neo/lookup/" + id;
 
     try {
       const response = await fetch(url, {
@@ -129,10 +129,10 @@ const MainComponent = () => {
       console.log(data);
 
       setResponseDetail(data.data);
-      setModalLoading(false)
+      setModalLoading(false);
     } catch (error) {
       setError(error.message);
-      setModalLoading(false)
+      setModalLoading(false);
     }
   };
 
@@ -200,75 +200,77 @@ const MainComponent = () => {
             </div>
           </form>
         </div>
-        {show && (
-          modalLoading ? 
-          <Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton className="bg-secondary">
-              
-            </Modal.Header>
-            <Modal.Body className="bg-secondary col-sm-12 col-xl-12 text-center">
-              <Spinner/>
-            </Modal.Body>
-          </Modal> :           <Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton className="bg-secondary">
-              <Modal.Title>{responseDetail.name}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body className="bg-secondary col-sm-12 col-xl-12 text-start">
-              <div className="bg-secondary rounded h-100">
-                <div className="d-flex justify-content-between">
-                  <h6 className="mb-4"></h6>
-                  <div>
-                    <span
-                      className={`badge ${
-                        responseDetail.isHazardous ? "bg-danger" : "bg-success"
-                      } me-1`}
-                    >
-                      {responseDetail.isHazardous
-                        ? "Hazardous"
-                        : "Not Hazardous"}
-                    </span>
+        {show &&
+          (modalLoading ? (
+            <Modal show={show} onHide={handleClose}>
+              <Modal.Header closeButton className="bg-secondary"></Modal.Header>
+              <Modal.Body className="bg-secondary col-sm-12 col-xl-12 text-center">
+                <Spinner />
+              </Modal.Body>
+            </Modal>
+          ) : (
+            <Modal show={show} onHide={handleClose}>
+              <Modal.Header closeButton className="bg-secondary">
+                <Modal.Title>{responseDetail.name}</Modal.Title>
+              </Modal.Header>
+              <Modal.Body className="bg-secondary col-sm-12 col-xl-12 text-start">
+                <div className="bg-secondary rounded h-100">
+                  <div className="d-flex justify-content-between">
+                    <h6 className="mb-4"></h6>
+                    <div>
+                      <span
+                        className={`badge ${
+                          responseDetail.isHazardous
+                            ? "bg-danger"
+                            : "bg-success"
+                        } me-1`}
+                      >
+                        {responseDetail.isHazardous
+                          ? "Hazardous"
+                          : "Not Hazardous"}
+                      </span>
+                    </div>
                   </div>
+                  <dl className="row mb-0 mt-2">
+                    <dt className="col-sm-4">Diameter</dt>
+                    <dd className="col-sm-8">
+                      {formatDiameter(responseDetail.diameter.min)} m -{" "}
+                      {formatDiameter(responseDetail.diameter.max)} m
+                    </dd>
+                  </dl>
+                  <table className="table table-striped mt-5 text-center">
+                    <thead>
+                      <tr>
+                        <th scope="col">Approach Date (UTC)</th>
+                        <th scope="col">Distance</th>
+                        <th scope="col">Velocity</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {responseDetail.approachData.map((e, id) => {
+                        return (
+                          <tr key={id}>
+                            <td>{e.closeApproachDate}</td>
+                            <td>{formatNum(e.distanceEarthKm)} km</td>
+                            <td>{formatNum(e.relativeVelocityKph)} km/h</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
                 </div>
-                <dl className="row mb-0 mt-2">
-                  <dt className="col-sm-4">Diameter</dt>
-                  <dd className="col-sm-8">
-                    {formatDiameter(responseDetail.diameter.min)} m -{" "}
-                    {formatDiameter(responseDetail.diameter.max)} m
-                  </dd>
-                </dl>
-                <table className="table table-striped mt-5 text-center">
-                  <thead>
-                    <tr>
-                      <th scope="col">Approach Date (UTC)</th>
-                      <th scope="col">Distance</th>
-                      <th scope="col">Velocity</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {responseDetail.approachData.map((e, id) => {
-                      return (
-                        <tr key={id}>
-                          <td>{e.closeApproachDate}</td>
-                          <td>{formatNum(e.distanceEarthKm)} km</td>
-                          <td>{formatNum(e.relativeVelocityKph)} km/h</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </Modal.Body>
-            <Modal.Footer className="bg-secondary">
-              <button
-                type="button"
-                className="btn btn-danger"
-                onClick={handleClose}
-              >
-                Close
-              </button>
-            </Modal.Footer>
-          </Modal>
-        )}
+              </Modal.Body>
+              <Modal.Footer className="bg-secondary">
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={handleClose}
+                >
+                  Close
+                </button>
+              </Modal.Footer>
+            </Modal>
+          ))}
         {response && !loading ? (
           <Card data={response} getDetail={handleAsteroidDetail} />
         ) : loading ? (
